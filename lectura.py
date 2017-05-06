@@ -4,8 +4,8 @@ import atexit
 
 
 class Lectura():
-    def __init__(self):
-        self.serialArduino = serial.Serial('COM4', 9600)
+    def __init__(self, port):
+        self.serialArduino = serial.Serial(port, 9600)
         return
 
     def doAtExit(self):
@@ -14,20 +14,13 @@ class Lectura():
         print("serialArduino.isOpen() = " + str(self.serialArduino.isOpen()))
         return
 
-    # Lee y grafica en tiempo real.
-    def leer(self, numLecturas):
+    def leer(self):
         atexit.register(self.doAtExit)
         print("serialArduino.isOpen() = " + str(self.serialArduino.isOpen()))
 
-        values, i = [], 0
-        while i <= numLecturas:
-            while self.serialArduino.inWaiting() == 0:
-                pass
+        while self.serialArduino.inWaiting() == 0:
+            pass
+        valueRead = self.serialArduino.readline()
+        value = int(float(valueRead))
 
-            valueRead = self.serialArduino.readline()
-            valuefloat = float(valueRead)
-            # print(valuefloat)
-            values.append(valuefloat)
-
-            i += 1
-        return values
+        return value
