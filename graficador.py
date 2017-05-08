@@ -102,7 +102,10 @@ class Grafica():
 
     def getPnn(self, maximos, factor):
         numeros = self.getNn(maximos, factor)
-        return len(numeros) / len(maximos)
+        if len(maximos)==0:
+            return 0
+        else:
+            return len(numeros) / len(maximos)
 
     def procesar(self):
         promedio = self.getPromedio()

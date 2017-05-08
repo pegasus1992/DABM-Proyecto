@@ -15,13 +15,15 @@ class Lectura():
         return
 
     def leer(self):
-        atexit.register(self.doAtExit)
-        print("serialArduino.isOpen() = " + str(self.serialArduino.isOpen()))
+        try:
+            atexit.register(self.doAtExit)
+           # print("serialArduino.isOpen() = " + str(self.serialArduino.isOpen()))
 
-        while self.serialArduino.inWaiting() == 0:
-            pass
-        valueRead = self.serialArduino.readline()
-        valueRead = valueRead.decode().strip()
-        value = int(float(valueRead))
-
+            while self.serialArduino.inWaiting() == 0:
+                pass
+            valueRead = self.serialArduino.readline()
+            valueRead = valueRead.decode().strip()
+            value = int(float(valueRead))
+        except Exception:
+            value = 480
         return value
