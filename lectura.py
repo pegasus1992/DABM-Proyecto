@@ -21,6 +21,7 @@ class Lectura():
         while self.serialArduino.inWaiting() == 0:
             pass
         valueRead = self.serialArduino.readline()
+        valueRead = valueRead.decode().strip()
         value = int(float(valueRead))
 
         return value

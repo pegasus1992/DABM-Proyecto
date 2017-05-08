@@ -18,6 +18,7 @@ from escritura import Escritura
 from graficador import Grafica
 import sys
 
+
 LIM = 100
 
 
@@ -127,7 +128,6 @@ class Ui_mainWindow(object):
 
         if archivo != '' and archivo.endswith('.csv'):
             Escritura(self.values, archivo).escribir()
-
             frecuencia = 100  # Hz
             bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = Grafica(archivo, frecuencia).procesar()
             self.txt_bpm.setText(str(bpm))
