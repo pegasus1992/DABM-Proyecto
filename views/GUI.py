@@ -10,6 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy
 from socket import socket
 import pickle
+import pandas as pd
 
 from models.lectura import Lectura
 from models.escritura import Escritura
@@ -119,10 +120,37 @@ class Ui_mainWindow(object):
         self.getMedidas(archivo, self.values)
         return
 
+    def accionCalcularIndicadores(self):
+        archivo = self.txt_archivo.toPlainText()
+        self.values = self.graficarLeyendo.values
+
+        if archivo != '':
+            if not archivo.endswith('.csv'):
+                archivo += '.csv'
+
+            Escritura(self.values, archivo).escribir()
+
+            dataset = pd.read_csv(archivo)
+            indicadores = Indicadores(100, dataset)
+            indicadores.ejecutar()
+            bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = indicadores.traerIndicadores()
+            #frecuencia = 100  # Hz
+            #bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = Grafica(archivo, frecuencia).procesar()
+
+            self.txt_bpm.setText(str(bpm))
+            self.txt_ibi.setText(str(ibi))
+            self.txt_sdnn.setText(str(sdnn))
+            self.txt_sdsd.setText(str(sdsd))
+            self.txt_rmssd.setText(str(rmssd))
+            self.txt_pnn20.setText(str(pnn20))
+            self.txt_pnn50.setText(str(pnn50))
+        return
+
     def accionesBotones(self):
         self.btn_iniciarLectura.clicked.connect(self.accionIniciar)
         self.btn_detenerLectura.clicked.connect(self.accionParar)
         self.btn_enviarServidor.clicked.connect(self.accionEnviarServidor)
+        self.btn_calcularIndicadores.clicked.connect(self.accionCalcularIndicadores)
         return
 
     def accionIniciar(self):
@@ -176,16 +204,6 @@ class Ui_mainWindow(object):
         #self.threadClass.terminate()
 
         self.getMedidas(archivo, self.values)
-        #Escritura(self.values, archivo).escribir()
-        #frecuencia = 100  # Hz
-        #bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = Grafica(archivo, frecuencia).procesar()
-        #self.txt_bpm.setText(str(bpm))
-        #self.txt_ibi.setText(str(ibi))
-        #self.txt_sdnn.setText(str(sdnn))
-        #self.txt_sdsd.setText(str(sdsd))
-        #self.txt_rmssd.setText(str(rmssd))
-        #self.txt_pnn20.setText(str(pnn20))
-        #self.txt_pnn50.setText(str(pnn50))
         return
 
     def setupUi(self, mainWindow):
