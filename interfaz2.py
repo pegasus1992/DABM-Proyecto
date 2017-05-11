@@ -16,8 +16,10 @@ from matplotlib.figure import Figure
 from lectura import Lectura
 from escritura import Escritura
 from graficador import Grafica
+from Indicadores import Indicadores
+from time import clock
 import sys
-from ThreadClass import ThreadClass
+
 
 
 
@@ -276,7 +278,7 @@ class Ui_mainWindow(object):
         self.retranslateUi(mainWindow)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
 
-        self.threadClass = ThreadClass()
+        self.threadClass = ThreadClass(self.values)
 
         self.definirGraficas()
         self.accionesBotones()
@@ -313,3 +315,26 @@ class Ui_mainWindow(object):
 
     def actualizarIndicadores(self):
         return
+
+
+class ThreadClass(QtCore.QThread):
+    #el parametro que se pasa aqui, es el parametro que recibe el metodo de la señal, en este caso actualizar recibe un float
+    sig = QtCore.pyqtSignal(float)
+
+    def __init__(self, arreglo, parent= None,  ):
+        super(ThreadClass,self).__init__(parent)
+        self.indicadores = Indicadores(100, arreglo)
+        self.arreglo = arreglo
+        #COnectar la señal a la funcion deseada
+        self.sig.connect(Ui_mainWindow.actualizarIndicadores)
+        self.a = 0
+
+    def run(self):
+        while True:
+            #b = clock()
+            #if b - self.a > 20:
+               #if(len(self.arreglo)>0):
+                #    self.indicadores.ejecutar()
+            #        self.sig.emit(self.indicadores.traerIndicadores())
+            print("Imprime")
+            #self.sig.emit(i)
