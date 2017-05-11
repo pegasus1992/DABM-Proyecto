@@ -17,6 +17,8 @@ from lectura import Lectura
 from escritura import Escritura
 from graficador import Grafica
 import sys
+from ThreadClass import ThreadClass
+
 
 
 LIM = 100
@@ -117,6 +119,7 @@ class Ui_mainWindow(object):
         if puerto != '' and archivo != '' and archivo.endswith('.csv'):
             self.graficarLeyendo.setPuerto(puerto)
             self.graficarLeyendo.timer.start()
+            self.threadClass.start()
         return
 
     def accionParar(self):
@@ -125,6 +128,7 @@ class Ui_mainWindow(object):
         self.graficarLeyendo.timer.stop()
         self.values = self.graficarLeyendo.values
         self.graficarLeyendo.resetDrawing()
+        self.threadClass.terminate()
 
         if archivo != '' and archivo.endswith('.csv'):
             Escritura(self.values, archivo).escribir()
@@ -272,8 +276,12 @@ class Ui_mainWindow(object):
         self.retranslateUi(mainWindow)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
 
+        self.threadClass = ThreadClass()
+
         self.definirGraficas()
         self.accionesBotones()
+
+
         return
 
     def retranslateUi(self, mainWindow):
@@ -301,4 +309,7 @@ class Ui_mainWindow(object):
         self.pushButton.setText(_translate("mainWindow", "Iniciar Lecturas"))
         self.pushButton_2.setText(_translate("mainWindow", "Detener Lecturas"))
         self.lbl_titulo.setText(_translate("mainWindow", "Monitor de frecuencia cardiaca"))
+        return
+
+    def actualizarIndicadores(self):
         return
