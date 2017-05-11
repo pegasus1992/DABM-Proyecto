@@ -92,8 +92,13 @@ class Indicadores():
 
         nn20 = [x for x in arregloDiferencias if (x > 20)]
         nn50 = [x for x in arregloDiferencias if (x > 50)]
-        self.pNN20 = float(len(nn20)) / float(len(arregloDiferencias))
-        self.pNN50 = float(len(nn50)) / float(len(arregloDiferencias))
+        lenDif = len(arregloDiferencias)
+        if lenDif != 0:
+            self.pNN20 = float(len(nn20)) / float(lenDif)
+            self.pNN50 = float(len(nn50)) / float(lenDif)
+        else:
+            self.pNN20 = float("inf")
+            self.pNN50 = float("inf")
 
 
     #Metodo encargado de calcular los indicadores y graficar
@@ -113,4 +118,4 @@ class Indicadores():
         self.calcularIndicadores(arregloDistancias)
 
     def traerIndicadores(self):
-        return self.IBI, self.SDNN, self.SDSD, self.RMSSD, self.pNN20, self.pNN50, self.BPM
+        return self.BPM, self.IBI, self.SDNN, self.SDSD, self.RMSSD, self.pNN20, self.pNN50

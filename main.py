@@ -1,7 +1,7 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from graficador import Grafica
-from interfaz2 import Ui_mainWindow
 import sys
+
+from PyQt5 import QtWidgets
+from views.GUI import Ui_mainWindow
 
 
 def errors():

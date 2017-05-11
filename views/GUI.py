@@ -7,23 +7,22 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget
-import matplotlib
+from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy
+from socket import socket
+import pickle
 
+from models.lectura import Lectura
+from models.escritura import Escritura
+from models.graficador import Grafica
+from models.Indicadores import Indicadores
+from models.graficar import Graficador
+
+import matplotlib
 matplotlib.use("Qt5Agg")
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from lectura import Lectura
-from escritura import Escritura
-from graficador import Grafica
-from Indicadores import Indicadores
-from time import clock
-import sys
 
-
-
-
-LIM = 100
+LIM = 300
 
 
 # Link: http://www.boxcontrol.net/embedding-matplotlib-plot-on-pyqt5-gui.html
@@ -103,6 +102,11 @@ class Ui_mainWindow(object):
         self.values = []
         return
 
+    def definirSocket(self):
+        self.sock = socket()
+        self.sock.connect(("localhost", 6030))
+        return
+
     def definirGraficas(self):
         self.grafica = QVBoxLayout(self.frame)
         self.graficarLeyendo = MyDynamicMplCanvas(self.frame, width=5, height=4, dpi=100)
@@ -118,10 +122,11 @@ class Ui_mainWindow(object):
         archivo = self.txt_archivo.toPlainText()
         puerto = self.txt_puerto.toPlainText()
 
-        if puerto != '' and archivo != '' and archivo.endswith('.csv'):
+        if puerto != '' and archivo != '':
+            puerto = puerto.upper()
             self.graficarLeyendo.setPuerto(puerto)
             self.graficarLeyendo.timer.start()
-            self.threadClass.start()
+            #self.threadClass.start()
         return
 
     def accionParar(self):
@@ -130,19 +135,47 @@ class Ui_mainWindow(object):
         self.graficarLeyendo.timer.stop()
         self.values = self.graficarLeyendo.values
         self.graficarLeyendo.resetDrawing()
-        self.threadClass.terminate()
+        #self.threadClass.terminate()
 
-        if archivo != '' and archivo.endswith('.csv'):
-            Escritura(self.values, archivo).escribir()
-            frecuencia = 100  # Hz
-            bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = Grafica(archivo, frecuencia).procesar()
-            self.txt_bpm.setText(str(bpm))
-            self.txt_ibi.setText(str(ibi))
-            self.txt_sdnn.setText(str(sdnn))
-            self.txt_sdsd.setText(str(sdsd))
-            self.txt_rmssd.setText(str(rmssd))
-            self.txt_pnn20.setText(str(pnn20))
-            self.txt_pnn50.setText(str(pnn50))
+        if archivo != '':
+            if not archivo.endswith('.csv'):
+                archivo += '.csv'
+
+            values_string = pickle.dumps(self.values)
+            try:
+                self.sock.send(archivo)
+                self.sock.send(values_string)
+            except TypeError:
+                self.sock.send(bytes(archivo, "utf-8"))
+                self.sock.send(bytes(values_string, "utf-8"))
+            else:
+                 bpm = self.sock.recv(1024)
+                 ibi = self.sock.recv(1024)
+                 sdnn = self.sock.recv(1024)
+                 sdsd = self.sock.recv(1024)
+                 rmssd = self.sock.recv(1024)
+                 pnn20 = self.sock.recv(1024)
+                 pnn50 = self.sock.recv(1024)
+                 if bpm and ibi and sdnn and sdsd and rmssd and pnn20 and pnn50:
+                     self.txt_bpm.setText(str(bpm))
+                     self.txt_ibi.setText(str(ibi))
+                     self.txt_sdnn.setText(str(sdnn))
+                     self.txt_sdsd.setText(str(sdsd))
+                     self.txt_rmssd.setText(str(rmssd))
+                     self.txt_pnn20.setText(str(pnn20))
+                     self.txt_pnn50.setText(str(pnn50))
+                     Graficador().graficar(self.values)
+
+            #Escritura(self.values, archivo).escribir()
+            #frecuencia = 100  # Hz
+            #bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = Grafica(archivo, frecuencia).procesar()
+            #self.txt_bpm.setText(str(bpm))
+            #self.txt_ibi.setText(str(ibi))
+            #self.txt_sdnn.setText(str(sdnn))
+            #self.txt_sdsd.setText(str(sdsd))
+            #self.txt_rmssd.setText(str(rmssd))
+            #self.txt_pnn20.setText(str(pnn20))
+            #self.txt_pnn50.setText(str(pnn50))
         return
 
     def setupUi(self, mainWindow):
@@ -278,11 +311,11 @@ class Ui_mainWindow(object):
         self.retranslateUi(mainWindow)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
 
-        self.threadClass = ThreadClass(self.values)
+        #self.threadClass = ThreadClass(self.values)
 
         self.definirGraficas()
         self.accionesBotones()
-
+        self.definirSocket()
 
         return
 
