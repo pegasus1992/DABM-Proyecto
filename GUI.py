@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'interfazProyecto.ui'
+# Form implementation generated from reading ui file 'GUIDiseno.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
