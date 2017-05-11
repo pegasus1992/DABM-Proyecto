@@ -53,7 +53,7 @@ def main():
 
     # Escuchar peticiones en el puerto 6030.
     s.bind(("", 6030))
-    s.listen(0)
+    s.listen(5)
 
     while True:
         conn, addr = s.accept()
