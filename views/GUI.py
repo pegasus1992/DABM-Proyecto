@@ -113,9 +113,16 @@ class Ui_mainWindow(object):
         self.grafica.addWidget(self.graficarLeyendo)
         return
 
+    def accionEnviarServidor(self):
+        archivo = self.txt_archivo.toPlainText()
+        self.values = self.graficarLeyendo.values
+        self.getMedidas(archivo, self.values)
+        return
+
     def accionesBotones(self):
         self.btn_iniciarLectura.clicked.connect(self.accionIniciar)
         self.btn_detenerLectura.clicked.connect(self.accionParar)
+        self.btn_enviarServidor.clicked.connect(self.accionEnviarServidor)
         return
 
     def accionIniciar(self):
@@ -129,6 +136,37 @@ class Ui_mainWindow(object):
             #self.threadClass.start()
         return
 
+    def getMedidas(self, archivo, values):
+        if archivo != '':
+            if not archivo.endswith('.csv'):
+                archivo += '.csv'
+
+            values_string = pickle.dumps(values)
+            try:
+                self.sock.send(bytes(archivo, "utf-8"))
+                self.sock.send(values_string)
+            except TypeError:
+                self.sock.send(bytes(archivo, "utf-8"))
+                self.sock.send(values_string)
+            else:
+                bpm = self.sock.recv(2048).decode()
+                ibi = self.sock.recv(2048).decode()
+                sdnn = self.sock.recv(2048).decode()
+                sdsd = self.sock.recv(2048).decode()
+                rmssd = self.sock.recv(2048).decode()
+                pnn20 = self.sock.recv(2048).decode()
+                pnn50 = self.sock.recv(2048).decode()
+                if bpm and ibi and sdnn and sdsd and rmssd and pnn20 and pnn50:
+                    self.txt_bpm.setText(str(bpm))
+                    self.txt_ibi.setText(str(ibi))
+                    self.txt_sdnn.setText(str(sdnn))
+                    self.txt_sdsd.setText(str(sdsd))
+                    self.txt_rmssd.setText(str(rmssd))
+                    self.txt_pnn20.setText(str(pnn20))
+                    self.txt_pnn50.setText(str(pnn50))
+                    Graficador().graficar(self.values)
+        return
+
     def accionParar(self):
         archivo = self.txt_archivo.toPlainText()
         self.graficarLeyendo.lectura.doAtExit()
@@ -137,45 +175,17 @@ class Ui_mainWindow(object):
         self.graficarLeyendo.resetDrawing()
         #self.threadClass.terminate()
 
-        if archivo != '':
-            if not archivo.endswith('.csv'):
-                archivo += '.csv'
-
-            values_string = pickle.dumps(self.values)
-            try:
-                self.sock.send(archivo)
-                self.sock.send(values_string)
-            except TypeError:
-                self.sock.send(bytes(archivo, "utf-8"))
-                self.sock.send(bytes(values_string, "utf-8"))
-            else:
-                 bpm = self.sock.recv(1024)
-                 ibi = self.sock.recv(1024)
-                 sdnn = self.sock.recv(1024)
-                 sdsd = self.sock.recv(1024)
-                 rmssd = self.sock.recv(1024)
-                 pnn20 = self.sock.recv(1024)
-                 pnn50 = self.sock.recv(1024)
-                 if bpm and ibi and sdnn and sdsd and rmssd and pnn20 and pnn50:
-                     self.txt_bpm.setText(str(bpm))
-                     self.txt_ibi.setText(str(ibi))
-                     self.txt_sdnn.setText(str(sdnn))
-                     self.txt_sdsd.setText(str(sdsd))
-                     self.txt_rmssd.setText(str(rmssd))
-                     self.txt_pnn20.setText(str(pnn20))
-                     self.txt_pnn50.setText(str(pnn50))
-                     Graficador().graficar(self.values)
-
-            #Escritura(self.values, archivo).escribir()
-            #frecuencia = 100  # Hz
-            #bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = Grafica(archivo, frecuencia).procesar()
-            #self.txt_bpm.setText(str(bpm))
-            #self.txt_ibi.setText(str(ibi))
-            #self.txt_sdnn.setText(str(sdnn))
-            #self.txt_sdsd.setText(str(sdsd))
-            #self.txt_rmssd.setText(str(rmssd))
-            #self.txt_pnn20.setText(str(pnn20))
-            #self.txt_pnn50.setText(str(pnn50))
+        self.getMedidas(archivo, self.values)
+        #Escritura(self.values, archivo).escribir()
+        #frecuencia = 100  # Hz
+        #bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = Grafica(archivo, frecuencia).procesar()
+        #self.txt_bpm.setText(str(bpm))
+        #self.txt_ibi.setText(str(ibi))
+        #self.txt_sdnn.setText(str(sdnn))
+        #self.txt_sdsd.setText(str(sdsd))
+        #self.txt_rmssd.setText(str(rmssd))
+        #self.txt_pnn20.setText(str(pnn20))
+        #self.txt_pnn50.setText(str(pnn50))
         return
 
     def setupUi(self, mainWindow):

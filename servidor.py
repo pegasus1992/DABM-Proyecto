@@ -21,9 +21,8 @@ class Server(Thread):
         while True:
             try:
                 # Recibir datos del cliente.
-                archivo = self.conn.recv(1024)
-                values_string = self.conn.recv(4096)
-                values = pickle.loads(values_string)
+                archivo = self.conn.recv(2048).decode()
+                values = pickle.loads(self.conn.recv(1500000))
             except error:
                 print("[%s] Error de lectura." % self.name)
                 break
@@ -38,13 +37,13 @@ class Server(Thread):
                     indicadores.ejecutar()
                     bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = indicadores.traerIndicadores()
 
-                    self.conn.send(str(bpm))
-                    self.conn.send(str(ibi))
-                    self.conn.send(str(sdnn))
-                    self.conn.send(str(sdsd))
-                    self.conn.send(str(rmssd))
-                    self.conn.send(str(pnn20))
-                    self.conn.send(str(pnn50))
+                    self.conn.send(bytes(str(bpm), "utf-8"))
+                    self.conn.send(bytes(str(ibi), "utf-8"))
+                    self.conn.send(bytes(str(sdnn), "utf-8"))
+                    self.conn.send(bytes(str(sdsd), "utf-8"))
+                    self.conn.send(bytes(str(rmssd), "utf-8"))
+                    self.conn.send(bytes(str(pnn20), "utf-8"))
+                    self.conn.send(bytes(str(pnn50), "utf-8"))
         return
 
 
