@@ -36,7 +36,7 @@ waveFile.writeframes(b''.join(frames))
 waveFile.close()'''
 
 
-class guardarAudio():
+class GuardarAudio():
     def __init__(self):
         self.FORMAT = pyaudio.paInt16
         self.CHANNELS = 2
@@ -48,12 +48,14 @@ class guardarAudio():
         self.frames = []
         self.stream = None
 
+
     def iniciarGrabacion(self):
         self.stream = self.audio.open(format=self.FORMAT, channels=self.CHANNELS,rate=self.RATE, input=True,frames_per_buffer=self.CHUNK)
         print ("recording...")
-        while True:
-            data =  self.stream.read(self.CHUNK)
-            self.frames.append(data)
+
+    def grabar(self):
+        data =  self.stream.read(self.CHUNK)
+        self.frames.append(data)
 
     def guardarGrabacion(self):
         print ("finished recording")
