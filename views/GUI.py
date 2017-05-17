@@ -7,6 +7,9 @@ from models.Indicadores import Indicadores
 from models.graficar import Graficador
 from models.audio.audicion import AudioThread
 
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy
+
 from models.lectura import Lectura
 
 import matplotlib
