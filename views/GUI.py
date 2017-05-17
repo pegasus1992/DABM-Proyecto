@@ -316,20 +316,20 @@ class Ui_mainWindow(object):
         # self.numero_BPM.setProperty("intValue", 7866)
         # self.numero_BPM.setObjectName("numero_BPM")
         self.btn_iniciarLectura = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_iniciarLectura.setGeometry(QtCore.QRect(70, 550, 131, 41))
+        self.btn_iniciarLectura.setGeometry(QtCore.QRect(220, 550, 131, 41))
         self.btn_iniciarLectura.setStyleSheet("background-color: rgb(102, 255, 178);")
         self.btn_iniciarLectura.setObjectName("btn_inicirLectura")
         self.btn_detenerLectura = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_detenerLectura.setGeometry(QtCore.QRect(220, 550, 131, 41))
+        self.btn_detenerLectura.setGeometry(QtCore.QRect(370, 550, 131, 41))
         self.btn_detenerLectura.setStyleSheet("background-color: rgb(255, 153, 153);")
         self.btn_detenerLectura.setObjectName("btn_detenerLectura")
 
         self.btn_calcularIndicadores = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_calcularIndicadores.setGeometry(QtCore.QRect(370, 550, 131, 41))
+        self.btn_calcularIndicadores.setGeometry(QtCore.QRect(520, 550, 131, 41))
         self.btn_calcularIndicadores.setStyleSheet("background-color: rgb(255, 255, 153);")
         self.btn_calcularIndicadores.setObjectName("btn_calcularIndicadores")
 
-        self.btn_iniciarGrabacion = QtWidgets.QPushButton(self.centralwidget)
+        '''self.btn_iniciarGrabacion = QtWidgets.QPushButton(self.centralwidget)
         self.btn_iniciarGrabacion.setGeometry(QtCore.QRect(520, 550, 131, 41))
         self.btn_iniciarGrabacion.setStyleSheet("background-color: rgb(153, 255, 153);")
         self.btn_iniciarGrabacion.setObjectName("btn_iniciarGrabacion")
@@ -337,10 +337,10 @@ class Ui_mainWindow(object):
         self.btn_detenerGrabacion = QtWidgets.QPushButton(self.centralwidget)
         self.btn_detenerGrabacion.setGeometry(QtCore.QRect(670, 550, 131, 41))
         self.btn_detenerGrabacion.setStyleSheet("background-color: rgb(255, 204, 153);")
-        self.btn_detenerGrabacion.setObjectName("btn_detenerGrabacion")
+        self.btn_detenerGrabacion.setObjectName("btn_detenerGrabacion")'''
 
         self.btn_enviarServidor = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_enviarServidor.setGeometry(QtCore.QRect(820, 550, 131, 41))
+        self.btn_enviarServidor.setGeometry(QtCore.QRect(670, 550, 131, 41))
         self.btn_enviarServidor.setStyleSheet("background-color: rgb(255, 255, 153);")
         self.btn_enviarServidor.setObjectName("btn_detenerGrabacion")
 
@@ -394,8 +394,8 @@ class Ui_mainWindow(object):
         self.btn_iniciarLectura.setText(_translate("mainWindow", "Iniciar Lecturas"))
         self.btn_detenerLectura.setText(_translate("mainWindow", "Detener Lecturas"))
         self.btn_calcularIndicadores.setText(_translate("mainWindow", "Calcular Ind."))
-        self.btn_iniciarGrabacion.setText(_translate("mainWindow", "Iniciar Grabacion."))
-        self.btn_detenerGrabacion.setText(_translate("mainWindow", "Detener Grabacion"))
+        '''self.btn_iniciarGrabacion.setText(_translate("mainWindow", "Iniciar Grabacion."))
+        self.btn_detenerGrabacion.setText(_translate("mainWindow", "Detener Grabacion"))'''
         self.btn_enviarServidor.setText(_translate("mainWindow", "Enviar Servidor"))
         self.lbl_titulo.setText(_translate("mainWindow", "Monitor de frecuencia cardiaca"))
         return
