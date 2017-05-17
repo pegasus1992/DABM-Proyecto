@@ -32,7 +32,8 @@ class Server(Thread):
                     Escritura(values, archivo).escribir()
 
                     dataset = pd.read_csv(archivo)
-                    indicadores = Indicadores(100, dataset)
+                    frecuencia = 100  # Hz
+                    indicadores = Indicadores(frecuencia, dataset)
 
                     indicadores.ejecutar()
                     bpm, ibi, sdnn, sdsd, rmssd, pnn20, pnn50 = indicadores.traerIndicadores()
